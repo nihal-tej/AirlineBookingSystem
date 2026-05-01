@@ -2,7 +2,7 @@
 #include <string>
 #include "passenger.h"
 #include "flight.h"
- 
+
 class BoardingPass
 {
 public:
