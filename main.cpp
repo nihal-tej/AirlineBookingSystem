@@ -1,37 +1,37 @@
-#include "booking_system.h"
-#include "flight.h"
-#include "passenger.h"
-#include "route_manager.h"
-#include "admin.h"
-#include "boardingpass.h"
-#include "login_man.h"
 #include <iostream>
 #include <string>
 #include <limits>
 #include <algorithm>
-#include <bits/stdc++.h>
-using namespace std;
 
+#include "Header_files/booking_system.h"
+#include "Header_files/flight.h"
+#include "Header_files/passenger.h"
+#include "Header_files/route_manager.h"
+#include "Header_files/admin_view.h"
+#include "Header_files/pilot_view.h"
+#include "Header_files/boarding_pass_printer.h"
+#include "Header_files/login_manager.h"
+#include "Header_files/booking_storage.h"
+#include <climits>
 void clearInputStream()
 {
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    std::cin.clear();
+
+    std::cin.ignore(
+        std::numeric_limits<std::streamsize>::max(),
+        '\n');
 }
 
-int getValidatedInt(string prompt, int min = INT_MIN, int max = INT_MAX)
+int getValidatedInt(const std::string &prompt, int min = INT_MIN, int max = INT_MAX)
 {
     int value;
     while (true)
     {
-        cout << prompt;
-        cin >> value;
-
-        if (cin.fail() || value < min || value > max)
+        std::cout << prompt;
+        std::cin >> value;
+        if (std::cin.fail() || value < min || value > max)
         {
-            cout << "Invalid input. Enter a valid number";
-            if (min != INT_MIN && max != INT_MAX)
-                cout << " between " << min << " and " << max;
-            cout << ".\n";
+            std::cout << "Invalid input.\n";
             clearInputStream();
         }
         else
@@ -41,333 +41,386 @@ int getValidatedInt(string prompt, int min = INT_MIN, int max = INT_MAX)
         }
     }
 }
-char getValidatedChar(string prompt, string validChars)
+
+char getValidatedChar(const std::string &prompt, const std::string &validChars)
 {
     char ch;
     while (true)
     {
-        cout << prompt;
-        cin >> ch;
-        ch = toupper(ch);
-
-        if (validChars.find(ch) != string::npos)
+        std::cout << prompt;
+        std::cin >> ch;
+        ch = std::toupper(ch);
+        if (validChars.find(ch) != std::string::npos)
         {
             clearInputStream();
             return ch;
         }
-
-        cout << "Invalid input. Enter one of: " << validChars << "\n";
+        std::cout << "Invalid input.\n";
         clearInputStream();
     }
 }
-
-string getValidatedid()
+void showAdminMenu(AdminView &adminview, BookingSystem &system)
 {
-    string id;
+    std::string hi = "bookings.txt";
     while (true)
     {
-        cout << "Enter id Number (12-digit number): ";
-        cin >> id;
+        std::cout << "\n============ ADMIN PANEL ============\n";
+        std::cout << "1. View All Bookings\n";
+        std::cout << "2. View All Flights Stats\n";
+        std::cout << "3. View All Flights Occupancy & Revenue\n";
+        std::cout << "4. Save Data\n";
+        std::cout << "5. Add Flight\n";
+        std::cout << "6. Remove Flight\n";
+        std::cout << "7. Add Pilot\n";
+        std::cout << "8. Remove Pilot\n";
+        std::cout << "9. Show all Pilots\n";
+        std::cout << "10. Show one pilot details\n";
+        std::cout << "11. Show one Flight Bookings\n";
+        std::cout << "12. Show one Flight Occupancy and revenue \n";
+        std::cout << "13. Exit Admin Panel\n";
+        std::cout << "Enter choice: ";
+        int choice = getValidatedInt("Enter choice: ", 1, 13);
 
-        if (id.size() != 12)
+        switch (choice)
         {
-            cout << "Invalid id. Must be 12 digits.\n";
-            clearInputStream();
+        case 1:
+        {
+            adminview.viewAllBookings(system);
+            break;
         }
-        else
+        case 2:
         {
-            return id;
+            adminview.viewFlightStats(system);
+            break;
+        }
+        case 3:
+        {
+            adminview.viewOccupancyAndRevenue(system);
+            break;
+        }
+        case 4:
+        {
+
+            std::cout << "Data saved.\n";
+            break;
+        }
+        case 5:
+        {
+            adminview.addFlight(system);
+            break;
+        }
+        case 6:
+        {
+
+            adminview.removeFlight(system);
+            break;
+        }
+        case 7:
+        {
+            adminview.addPilot(system);
+            std::cout << "Succesfully added pilot" << std::endl;
+            break;
+        }
+        case 8:
+        {
+
+            adminview.removePilot(system);
+            break;
+        }
+        case 9:
+        {
+            adminview.showAllPilots(system);
+            break;
+        }
+        case 10:
+        {
+            adminview.showOnePilotDetails(system);
+            break;
+        }
+        case 11:
+        {
+            adminview.viewOneFlightBooking(system);
+            break;
+        }
+        case 12:
+        {
+            adminview.viewOneFlightOccupancy(system);
+            break;
+        }
+        case 13:
+        {
+            std::cout << "Exiting admin panel.\n";
+            return;
+        }
+        default:
+            std::cout << "Invalid option.\n";
+            return;
+        }
+    }
+}
+void showPilotMenu(PilotView &pilotView, BookingSystem &system, const std::string &pilotId)
+{
+    while (true)
+    {
+        std::cout
+            << "\n========== PILOT PANEL ==========\n";
+
+        std::cout << "1. View Schedule\n";
+        std::cout << "2. View Details\n";
+        std::cout << "3. Save Data\n";
+        std::cout << "4. Exit\n";
+
+        int choice = getValidatedInt("Enter choice: ", 1, 4);
+
+        switch (choice)
+        {
+        case 1:
+            pilotView.viewSchedule(system, pilotId);
+            break;
+
+        case 2:
+            pilotView.viewDetails(system, pilotId);
+            break;
+        case 3:
+            BookingStorage::savePilots(system.getPilots(), "pilots.txt");
+            std::cout << "Data saved\n";
+            break;
+        case 4:
+            std::cout << "Exiting Pilot Panel.\n";
+            return;
         }
     }
 }
 
 int main()
 {
-    printf("Welcome to the Domestic Airline Booking System.");
+    std::cout << "Welcome to Domestic Airline Booking System.\n";
+    BookingSystem system;
+    RouteManager routeManager;
+    LoginManager loginManager;
+    AdminView adminView;
+    PilotView pilotView;
 
-    BookingSystem S;
-    RouteManager R;
-    string passport_num;
-    int loginChoice;
-    LoginManager L;
-    string fli = "flights.txt",
-           boo = "bookings.txt", pil = "pilots.txt", his = "bookinghistory.txt";
-    S.load_pilots(pil);
-    S.load_Flights(fli);
-    S.load_Data(boo);
-    S.load_history(his);
-    cout << "Login as:\n1. Admin\n2. Pilot\n3. Passenger\nEnter choice (1 or 2 or 3): ";
-    cin >> loginChoice;
-    clearInputStream();
+    BoardingPassPrinter boardingPassPrinter;
 
-    // ADMIN LOGIN
+    const std::string flightFile = "flights.txt";
+    const std::string bookingFile = "bookings.txt";
+    const std::string pilotFile = "pilots.txt";
+    const std::string historyFile = "bookinghistory.txt";
+
+    BookingStorage::loadPilots(system.getPilotsall(), system.getAllPilotIds(), pilotFile);
+    BookingStorage::loadFlights(system.getAllFlights(), system.getPilotFlights(), system.getPilotData(), flightFile);
+    BookingStorage::loadBookings(system.getBookings(), system.getBookedPassports(),
+                                 system.getPassengerSeatMapAll(), system.getAllFlights(), bookingFile);
+    BookingStorage::loadHistory(system.getPassengerHistory(), historyFile);
+
+    std::cout << "\nLogin As:\n";
+    std::cout << "1. Admin\n";
+    std::cout << "2. Pilot\n";
+    std::cout << "3. Passenger\n";
+    int loginChoice = getValidatedInt("Enter choice: ", 1, 3);
     if (loginChoice == 1)
     {
-        if (!L.loginAsAdmin())
+        if (!loginManager.loginAsAdmin())
         {
-            cout << "Admin login failed. Exiting." << endl;
+            std::cout << "Admin login failed.\n";
             return 0;
         }
-        // cout << "Admin login successful." << endl;
-        Admin A;
-        A.showMenu(S);
-        S.save_Data(boo);
-        S.save_Flights(fli);
-        S.save_Pilots(pil);
-        S.save_history(his);
-        return 0;
+        showAdminMenu(adminView, system);
     }
-    // Pilot login
+
     else if (loginChoice == 2)
     {
-        string pilot_id;
-        cout << "Enter the pilot Id:";
-        cin >> pilot_id;
-        // cout << S.num_pilots() << endl;
-        if (!L.loginAspilot(pilot_id, S))
+        std::string pilotId;
+        std::cout << "Enter Pilot ID: ";
+        std::cin >> pilotId;
+        if (!loginManager.loginAsPilot(pilotId, system))
         {
-            cout << "Pilot login failed. Exiting." << endl;
+            std::cout << "Pilot login failed.\n";
             return 0;
         }
-        S.save_Pilots(pil);
-        return 0;
+        showPilotMenu(pilotView, system, pilotId);
     }
-    // PASSENGER LOGIN
-    else if (loginChoice == 3)
+
+    else
     {
-        cout << "Enter passport Number: ";
-        cin >> passport_num;
-        if (!L.loginAsPassenger(passport_num))
+        std::string passport;
+        std::cout << "Enter Passport Number: ";
+        std::cin >> passport;
+        if (!loginManager.loginAsPassenger(passport))
         {
-            cout << "Passenger login failed. Exiting." << endl;
+            std::cout << "Passenger login failed.\n";
             return 0;
         }
-        cout << "Passenger login successful.\n";
-        // cout << "Passenger login successful.\n";
-
-        // MAIN MENU LOOP
-        while (true)
+        bool p=true;
+        while (p)
         {
-            cout << "\n--- MAIN MENU ---\n";
-            cout << "1. View Flights\n";
-            cout << "2. Book Ticket\n";
-            cout << "3. Cancel Ticket\n";
-            cout << "4. View Booking History\n";
-            cout << "5. Generate Boarding Pass\n";
-            cout << "6. Logout\n";
-
-            int choice = getValidatedInt("Enter your choice (1-6): ", 1, 6);
-
-            // === OPTION 1 ===
-            if (choice == 1)
+            std::cout << "\n========== PASSENGER MENU ==========\n";
+            std::cout << "1. View Flights\n";
+            std::cout << "2. Book Ticket\n";
+            std::cout << "3. Cancel Ticket\n";
+            std::cout << "4. Generate Boarding Pass\n";
+            std::cout << "5. View Booking History\n";
+            std::cout << "6. Logout\n";
+            int choice = getValidatedInt("Enter choice: ", 1, 6);
+            switch (choice)
             {
-                S.listFlights();
-                continue;
+            case 1:
+            {
+                adminView.listFlights(system);
+                break;
             }
-
-            // === OPTION 2: BOOKING ===
-            else if (choice == 2)
+            case 2:
             {
-                // Passenger Input
-                string src,
-                    dst,
-                    date;
-                int slotChoice;
-                // cout << "Total flights loaded = " << S.getFlights().size() << endl;
-
-                cout << "Enter Source City: ";
-                cin >> src;
-
-                cout << "Enter Destination City: ";
-                cin >> dst;
-
-                cout << "Enter Date (YYYY-MM-DD): ";
-                cin >> date;
-
-                cout << "Select Time Slot:\n";
-                cout << "1. Morning\n2. Afternoon\n3. Evening\nChoice: ";
-                cin >> slotChoice;
-
+                std::string source;
+                std::string destination;
+                std::string date;
+                std::cout << "Enter Source: ";
+                std::cin >> source;
+                std::cout << "Enter Destination: ";
+                std::cin >> destination;
+                std::cout << "Enter Date: ";
+                std::cin >> date;
+                std::cout << "1. Morning\n";
+                std::cout << "2. Afternoon\n";
+                std::cout << "3. Evening\n";
+                int slotChoice = getValidatedInt("Choose slot: ", 1, 3);
                 RouteManager::TimeSlot slot;
-
-                if (slotChoice == 1)
-                    slot = RouteManager::Morning;
-                else if (slotChoice == 2)
-                    slot = RouteManager::Afternoon;
-                else
-                    slot = RouteManager::Evening;
-
-                string src_normalized = RouteManager::normalize(src);
-                string dst_normalized = RouteManager::normalize(dst);
-                auto available_flights = R.getFlightOptionsByTime(src_normalized, dst_normalized, slot, date, S);
-
-                if (available_flights.empty())
+                switch (slotChoice)
                 {
-                    cout << "No flight times found for that route and time slot.\n";
-                    return 0;
+                case 1:
+                    slot = RouteManager::TimeSlot::Morning;
+                    break;
+
+                case 2:
+                    slot = RouteManager::TimeSlot::Afternoon;
+                    break;
+
+                case 3:
+                    slot = RouteManager::TimeSlot::Evening;
+                    break;
                 }
-                cout << "\nAvailable Flights from " << src << " to " << dst << " on " << date << " (Time Slot: " << slot << "):\n\n";
-
-                int flight_count = 0;
-                for (auto &f : available_flights)
+                auto flights = routeManager.getFlightOptionsByTime(source,destination,slot,date,system);
+                if (flights.empty())
                 {
-                    // FOUND THE FLIGHT: Output the requested details!
-                    cout << "[" << ++flight_count << "] ";
-                    cout << "Flight ID: " << f.getFlightID()
-                         << " | Time: " << f.getTime()
-                         << " | Vacancies: " << f.getvacancies()
-                         << " | price Flight: Rs." << f.getBaseFare() * (1 + f.getOccupancyRate()) << "\n";
-                }
-
-                if (flight_count == 0)
-                {
-                    cout << "No matching flights found in loaded data for the selected date and time slot.\n";
-                    return 0;
-                }
-                string flightID;
-                cout << "Enter Flight ID: ";
-                cin >> flightID;
-
-                Flight *f = S.findFlight(flightID);
-                if (!f)
-                {
-                    cout << "Flight not found.\n";
+                    std::cout << "No flights found.\n";
                     continue;
                 }
-
-                f->displaySeats();
-
-                string tempName;
-                int tempAge;
-                char tempGender;
-                int tempRow;
-                char tempColChar;
-                while (true)
+                for (const auto &flight : flights)
                 {
-                    cout << "Enter Passenger Name: ";
-                    cin >> tempName;
-                    tempAge = getValidatedInt("Enter Age: ", 1, 120);
-                    tempGender = getValidatedChar("Enter Gender (M/F): ", "MF");
-                    tempRow = getValidatedInt(
-                        "Enter Seat Row (1-" + to_string(f->getTotalRows()) + "): ", 1, f->getTotalRows());
-
-                    string validCols = "";
-                    for (int i = 0; i < f->getTotalCols(); i++)
-                        validCols += char('A' + i);
-
-                    tempColChar = getValidatedChar(
-                        "Enter Seat Column (A-" + string(1, validCols.back()) + "): ",
-                        validCols);
-
-                    string confirm;
-                    cout << "You entered:\n";
-                    cout << "  Name: " << tempName << "\n";
-                    cout << "  Age: " << tempAge << "\n";
-                    cout << "  Gender: " << tempGender << "\n";
-                    cout << "  Seat: " << tempRow << tempColChar << "\n";
-                    cout << "Confirm booking? (yes/back): ";
-                    cin >> confirm;
-
-                    if (confirm == "yes")
-                        break;
-                    cout << "Re-enter your details.\n";
+                    std::cout << "\nFlight ID: "
+                              << flight.getFlightId()
+                              << " | Time: "
+                              << flight.getTime()
+                              << " | Vacancies: "
+                              << flight.getVacancies()
+                              << "\n";
                 }
-
-                int tempCol = toupper(tempColChar) - 'A';
-
-                if (!f->isSeatAvailable(tempRow - 1, tempCol))
+                std::string flightId;
+                std::cout << "Enter Flight ID: ";
+                std::cin >> flightId;
+                Flight *target = system.findFlight(flightId);
+                if (!target)
                 {
-                    cout << "Seat already booked.\n";
+                    std::cout << "Flight not found.\n";
                     continue;
                 }
-
-                Passenger p(tempName, passport_num, tempAge, tempGender);
-
-                if (S.bookTicket(flightID, p, tempRow - 1, tempCol))
+                target->displaySeats();
+                std::string name;
+                int age;
+                char gender;
+                int row;
+                std::cout << "Enter Name: ";
+                std::cin >> name;
+                age = getValidatedInt("Enter Age: ", 1, 120);
+                gender = getValidatedChar("Enter Gender(M/F): ", "MF");
+                row = getValidatedInt("Enter Row: ",1,target->getTotalRows());
+                std::string validCols;
+                for (int i = 0; i < target->getTotalCols(); i++)
                 {
-                    cout << "Booking successful.\n";
+                    validCols += char('A' + i);
+                }
+                char colChar = getValidatedChar(
+                    "Enter Column: ",
+                    validCols);
+                int col = std::toupper(colChar) - 'A';
+                Passenger passenger(name, passport, age, gender);
+                if (system.bookTicket(flightId, passenger, row - 1, col))
+                {
+                    std::cout << "Booking successful.\n";
                 }
                 else
                 {
-                    cout << "Booking failed.\n";
+                    std::cout << "Booking failed.\n";
                 }
-                continue;
+                break;
+            }
+            case 3:
+            {
+                std::string flightId;
+                std::cout << "Enter Flight ID: ";
+                std::cin >> flightId;
+                system.cancelTicket(flightId, passport);
+                std::cout << "Cancellation completed.\n";
+                break;
             }
 
-            // === OPTION 3: CANCEL ===
-            else if (choice == 3)
+            case 4:
             {
-                string flightID;
-                cout << "Enter Flight ID to cancel: ";
-                cin >> flightID;
-
-                string confirm;
-                cout << "Confirm cancellation? (yes/no): ";
-                cin >> confirm;
-
-                if (confirm != "yes")
+                std::string flightId;
+                std::cout << "Enter Flight ID: ";
+                std::cin >> flightId;
+                Flight *flight = system.findFlight(flightId);
+                if (!flight)
                 {
-                    cout << "Cancelled.\n";
+                    std::cout << "Flight not found.\n";
                     continue;
                 }
-
-                S.cancelTicket(flightID, passport_num);
-            }
-
-            // === OPTION 4: HISTORY ===
-            else if (choice == 4)
-            {
-                S.viewBookingHistory(passport_num);
-            }
-
-            // === OPTION 5: BOARDING PASS ===
-            else if (choice == 5)
-            {
-                string flightID;
-                cout << "Enter Flight ID: ";
-                cin >> flightID;
-                Flight *f = S.findFlight(flightID);
-                if (!f)
-                {
-                    cout << "Flight not found.\n";
-                    continue;
-                }
-
-                auto seat = S.getPassengerSeat(flightID, passport_num);
+                auto seat = system.getPassengerSeat(flightId, passport);
                 if (seat.first == -1)
                 {
-                    cout << "No boarding pass found.\n";
+                    std::cout << "Boarding pass unavailable.\n";
                     continue;
                 }
-                auto all = S.getBookings();
-                if (!all.count(flightID))
+                const auto &bookings = system.getBookings();
+                if (!bookings.count(flightId))
                 {
-                    cout << "No bookings for that flight\n";
                     continue;
                 }
-                auto bookings = all.at(flightID);
-                for (auto p : bookings)
+                for (const auto &passenger : bookings.at(flightId))
                 {
-                    if (p.getPassportNumber() == passport_num)
+                    if (passenger.getPassportNumber() == passport)
                     {
-                        BoardingPass B;
-                        B.generate(p, *f, seat.first, seat.second);
+                        boardingPassPrinter.generate(passenger,*flight,seat.first + 1,seat.second);
                         break;
                     }
                 }
-            }
-
-            // === OPTION 6: LOGOUT ===
-            else if (choice == 6)
-            {
-                cout << "Logged out. Goodbye!\n";
-                S.save_Flights(fli);
-                S.save_Data(boo);
-                S.save_Pilots(pil);
-                S.save_history(his);
                 break;
+            }
+            case 5:
+            {
+                adminView.viewPassengerBookingHistory(passport, system);
+                break;
+            }
+            case 6:
+            {
+                std::cout << "Logged out.\n";
+                p=false;
+                break;
+            }
+            default:
+            {
+                std::cout << "Invalid Entry\n";
+                p=false;
+                break;
+            }
             }
         }
     }
+    BookingStorage::saveFlights(system.getFlights(), flightFile);
+    BookingStorage::saveBookings(system.getBookings(), system.getPassengerSeatMap(), bookingFile);
+    BookingStorage::savePilots(system.getPilots(), pilotFile);
+    BookingStorage::saveHistory(system.getPassengerHistory(), historyFile);
+
     return 0;
 }
