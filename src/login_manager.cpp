@@ -1,16 +1,13 @@
-#ifndef LOGIN_MANAGER_H
-#define LOGIN_MANAGER_H
+#include "login_manager.hpp"
 
 #include <iostream>
 #include <string>
 #include <cctype>
 
-#include "booking_system.h"
+#include "booking_system.hpp"
 
-class LoginManager
-{
-public:
-    bool loginAsAdmin() const
+
+    bool LoginManager::loginAsAdmin() const
     {
         std::string password;
         std::cout << "Enter Admin Password: ";
@@ -23,12 +20,12 @@ public:
         std::cout << "Invalid admin password.\n";
         return false;
     }
-    bool isValidPilot(const std::string &pilotId,
+    bool LoginManager::isValidPilot(const std::string &pilotId,
                       const BookingSystem &system) const
     {
         return system.checkPilot(pilotId);
     }
-    bool loginAsPilot(const std::string &pilotId,
+    bool LoginManager::loginAsPilot(const std::string &pilotId,
                       const BookingSystem &system) const
     {
         if (!isValidPilot(pilotId, system))
@@ -48,7 +45,7 @@ public:
         return false;
     }
 
-    bool loginAsPassenger(const std::string &passport) const
+    bool LoginManager::loginAsPassenger(const std::string &passport) const
     {
         if (!isValidPassport(passport))
         {
@@ -59,7 +56,7 @@ public:
         return true;
     }
 
-    static bool isValidPassport(const std::string &passport)
+    bool LoginManager::isValidPassport(const std::string &passport)
     {
         if (passport.size() != 12)
             return false;
@@ -70,6 +67,3 @@ public:
         }
         return true;
     }
-};
-
-#endif

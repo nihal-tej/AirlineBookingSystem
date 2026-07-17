@@ -1,0 +1,22 @@
+@startuml
+
+actor Administrator
+
+participant AdminView
+participant BookingSystem
+participant Flight
+participant BookingStorage
+
+Administrator -> AdminView : Add Flight
+
+AdminView -> BookingSystem : addFlight()
+
+BookingSystem -> Flight : Create Flight
+
+BookingSystem -> BookingStorage : saveFlights()
+
+BookingStorage --> BookingSystem : Checks and returns if duplicate
+
+BookingSystem --> AdminView : Flight Added
+
+@enduml

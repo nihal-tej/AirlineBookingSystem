@@ -1,0 +1,26 @@
+@startuml
+
+actor Passenger
+
+participant PassengerView
+participant BookingSystem
+participant Flight
+participant Seat
+participant BookingStorage
+
+Passenger -> PassengerView : Cancel Ticket
+
+PassengerView -> BookingSystem : cancelTicket()
+
+BookingSystem -> Flight : findFlight()
+
+Flight -> Seat : freeSeat()
+
+BookingSystem -> BookingStorage : saveBookings()
+BookingSystem -> BookingStorage : savePassengerHistory()
+BookingSystem -> BookingStorage : updateFlightdata()
+BookingStorage --> BookingSystem
+
+BookingSystem --> PassengerView : Success
+
+@enduml

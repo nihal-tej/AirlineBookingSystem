@@ -1,22 +1,13 @@
-#ifndef ROUTE_MANAGER_H
-#define ROUTE_MANAGER_H
-#include "booking_system.h"
+#include "route_manager.hpp"
+#include "booking_system.hpp"
 #include <string>
 #include <vector>
 #include <algorithm>
 #include <cctype>
 
-class RouteManager
-{
-public:
-    enum class TimeSlot
-    {
-        Morning,   // 05:00 - 11:59
-        Afternoon, // 12:00 - 17:59
-        Evening    // 18:00 - 23:59
-    };
 
-    static std::string normalize(const std::string &city) 
+
+    std::string RouteManager::normalize(const std::string &city) 
     {
         std::string s = city;
         std::transform(s.begin(), s.end(), s.begin(),[](unsigned char c)
@@ -25,7 +16,7 @@ public:
                   });
         return s;
     }
-    std::vector<Flight> getFlightOptionsByTime(const std::string &src, const std::string &dst, TimeSlot slot, const std::string &date, const BookingSystem &system) const
+    std::vector<Flight> RouteManager::getFlightOptionsByTime(const std::string &src, const std::string &dst, TimeSlot slot, const std::string &date, const BookingSystem &system) const
     {
         std::vector<Flight> result;
         //  normalized strings to lower so that no case sensitive
@@ -65,6 +56,3 @@ public:
 
         return result;
     }
-};
-
-#endif

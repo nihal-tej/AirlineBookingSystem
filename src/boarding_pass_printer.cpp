@@ -1,16 +1,11 @@
-#ifndef BOARDING_PASS_PRINTER_H
-#define BOARDING_PASS_PRINTER_H
-//As these are guard which make to include a file once only.
+#include "boarding_pass_printer.hpp"
 
 #include <iostream>
 #include <string>
-#include "passenger.h"
-#include "flight.h"
+#include "passenger.hpp"
+#include "flight.hpp"
 
-class BoardingPassPrinter
-{
-public:
-    void generate(const Passenger &p, const Flight &f, int row, int col)
+    void BoardingPassPrinter::generate(const Passenger &p, const Flight &f, int row, int col) const
     {
         std::cout << "\n=========================================\n";
         std::cout << "            BOARDING PASS\n";
@@ -30,5 +25,3 @@ public:
         std::cout << "         Have a Pleasant Journey!\n";
         std::cout << "=========================================\n\n";
     }
-};
-#endif

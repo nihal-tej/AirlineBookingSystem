@@ -1,25 +1,17 @@
-#ifndef PASSENGER_H
-#define PASSENGER_H
+#include "passenger.hpp"
 #include <iostream>
 #include <vector>
 #include <string>
 #include <stdexcept>
-class Passenger
-{
-    std::string name;
-    std::string passportNumber;
-    int age;
-    char gender;
 
-public:
-    Passenger()
+    Passenger::Passenger()
 {
     name = "";
     passportNumber = "";
     age = 0;
     gender = 'U';
 }
-    Passenger(const std::string &n, const std::string &pno, int a, char g)
+    Passenger::Passenger(const std::string &n, const std::string &pno, int a, char g)
     {
         if (n.empty())
             throw std::invalid_argument("Passenger name cannot be empty");
@@ -34,10 +26,8 @@ public:
         this->age = a;
         this->gender = g;
     }
-    std::string getName() const { return name; }
-    std::string getPassportNumber() const { return passportNumber; }
-    int getAge() const { return age; }
-    char getGender() const { return gender; }
-};
+    std::string Passenger::getName() const { return name; }
+    std::string Passenger::getPassportNumber() const { return passportNumber; }
+    int Passenger::getAge() const { return age; }
+    char Passenger::getGender() const { return gender; }
 
-#endif

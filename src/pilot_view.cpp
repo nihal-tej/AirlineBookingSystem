@@ -1,5 +1,4 @@
-#ifndef PILOT_VIEW_H
-#define PILOT_VIEW_H
+#include "pilot_view.hpp"
 
 #include <iostream>
 #include <string>
@@ -7,12 +6,10 @@
 #include <tuple>
 #include <utility>
 
-#include "booking_system.h"
+#include "booking_system.hpp"
 
-class PilotView
-{
-public:
-    void viewDetails(const BookingSystem &system,
+
+    void PilotView::viewDetails(const BookingSystem &system,
                      const std::string &pilotId) const
     {
         const auto &pilots = system.getPilots();
@@ -33,7 +30,7 @@ public:
         }
     }
 
-    void viewSchedule(const BookingSystem &system,
+    void PilotView::viewSchedule(const BookingSystem &system,
                       const std::string &pilotId) const
     {
         const auto &pilotSchedules =system.getPilotSchedule(pilotId);
@@ -64,6 +61,3 @@ public:
             std::cout << "No schedule found on this date.\n";
         }
     }
-};
-
-#endif

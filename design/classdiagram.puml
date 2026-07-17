@@ -1,0 +1,105 @@
+@startuml
+
+
+    class AdminView
+    class PassengerView
+    class PilotView
+
+    class LoginManager {
+        + loginAsAdmin()
+        + loginAsPilot()
+        + loginAsPassenger()
+    }
+    
+    class InputUtils
+    class BoardingPassPrinter
+    class TimeUtils
+
+    class BookingSystem {
+        - flights
+        - bookings
+        - pilots
+        - passenger
+        - passengerSeatMap
+        - passengerHistory
+        - pilotdata
+
+        + addFlight()
+        + removeFlight()
+        + addPilot()
+        + removePilot()
+        + bookTicket()
+        + cancelTicket()
+        + findFlight()
+        + findPassenger()
+    }
+
+    class RouteManager {
+        + getFlightOptionsByTime()
+    }
+
+    class Flight {
+        - flightId
+        - source
+        - destination
+        - seats
+
+        + reserveSeat()
+        + freeSeat()
+        + isSeatAvailable()
+    }
+
+    class Seat {
+        - row
+        - column
+        - status
+        - price
+
+        + reserve()
+        + freeSeat()
+    }
+
+    class Passenger {
+        - name
+        - passport
+        - age
+        - gender
+    }
+
+    class Pilot {
+        - pilotId
+        - password
+    }
+
+    class BookingStorage {
+        + saveFlights()
+        + loadFlights()
+        + saveBookings()
+        + loadBookings()
+    }
+
+' Views use InputUtils to read inputs and choices
+AdminView --> InputUtils
+PassengerView --> InputUtils
+PilotView --> InputUtils
+
+' Views talk to the Business Layer to execute actions
+AdminView --> BookingSystem
+PilotView --> BookingSystem
+PassengerView --> BookingSystem
+PassengerView --> RouteManager
+PassengerView --> BoardingPassPrinter
+
+' Core Logic to Domain Objects (Aggregation)
+BookingSystem o-- Flight
+BookingSystem o-- Passenger
+BookingSystem o-- Pilot
+
+' Domain-level ownership (Composition)
+Flight *-- Seat
+
+' Core Logic Dependencies (Infrastructure)
+BookingSystem --> BookingStorage
+BookingSystem --> TimeUtils
+
+@enduml

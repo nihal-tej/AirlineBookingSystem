@@ -1,0 +1,32 @@
+@startuml
+
+actor Passenger
+
+participant PassengerView
+participant RouteManager
+participant BookingSystem
+participant Flight
+participant Seat
+participant BookingStorage
+
+Passenger -> PassengerView : Book Ticket
+
+PassengerView -> RouteManager : Search Flights
+
+RouteManager --> PassengerView : Available Flights
+
+PassengerView -> BookingSystem : bookTicket()
+
+BookingSystem -> Flight : findFlight()
+
+Flight -> Seat : reserveSeat()
+
+BookingSystem -> BookingStorage : saveBookings()
+BookingSystem -> BookingStorage : savePassengerHistory()
+BookingSystem -> BookingStorage : updateFlightdata()
+
+BookingStorage --> BookingSystem
+
+BookingSystem --> PassengerView : Success
+
+@enduml

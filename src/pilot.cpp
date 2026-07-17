@@ -1,18 +1,10 @@
-#ifndef PILOT_H
-#define PILOT_H
+#include "pilot.hpp"
 
 #include <string>
 #include <stdexcept>
 
-class Pilot
-{
-    std::string name, passportNumber, id;
-    int age;
-    char gender;
-    std::string password;
 
-public:
-Pilot()
+Pilot::Pilot()
 {
     name = "";
     passportNumber = "";
@@ -21,7 +13,7 @@ Pilot()
     age = 0;
     gender = 'U';
 }
-    Pilot(const std::string &i, const std::string &n, const std::string &pno, int a, char g, const std::string &pa)
+    Pilot::Pilot(const std::string &i, const std::string &n, const std::string &pno, int a, char g, const std::string &pa)
     {
         if (i.empty())
             throw std::invalid_argument("Pilot Id cannot be empty");
@@ -42,18 +34,15 @@ Pilot()
         this->gender = g;
         password = pa;
     }
-    std::string getPilotName() const { return name; }
-    std::string getPassportNumber() const { return passportNumber; }
-    int getAge() const { return age; }
-    char getGender() const { return gender; }
-    std::string getPilotId() const
+    std::string Pilot::getPilotName() const { return name; }
+    std::string Pilot::getPassportNumber() const { return passportNumber; }
+    int Pilot::getAge() const { return age; }
+    char Pilot::getGender() const { return gender; }
+    std::string Pilot::getPilotId() const
     {
         return id;
     }
-    std::string getPassword() const
+    std::string Pilot::getPassword() const
     {
         return password;
     }
-};
-
-#endif

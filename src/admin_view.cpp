@@ -1,17 +1,17 @@
-#ifndef ADMIN_H
-#define ADMIN_H
+// #ifndef ADMIN_H
+// #define ADMIN_H
+
+// #include <iostream>
+#include "admin_view.hpp"
 
 #include <iostream>
 #include <string>
+#include "booking_system.hpp"
+#include "flight.hpp"
+#include "pilot.hpp"
 
-#include "booking_system.h"
-#include "pilot.h"
-#include "flight.h"
 
-class AdminView
-{
-public:
-    void viewAllBookings(const BookingSystem &system) const
+    void AdminView::viewAllBookings(const BookingSystem &system) const
     {
         std::cout << "\n========== ALL BOOKINGS ==========\n";
         const auto &all = system.getBookings();
@@ -37,7 +37,7 @@ public:
         }
     }
 
-    void viewOneFlightBooking(const BookingSystem &system) const
+    void AdminView:: viewOneFlightBooking(const BookingSystem &system) const
     {
         std::cout << "\n========== FLIGHT BOOKINGS ==========\n";
         const auto &all = system.getBookings();
@@ -69,7 +69,7 @@ public:
         }
     }
 
-    void viewFlightStats(const BookingSystem &system) const
+    void AdminView::viewFlightStats(const BookingSystem &system) const
     {
         std::cout << "\n========== FLIGHT STATISTICS ==========\n";
         const auto &flights = system.getFlights();
@@ -96,7 +96,7 @@ public:
         }
     }
 
-    void viewOccupancyAndRevenue(const BookingSystem &system) const
+    void AdminView:: viewOccupancyAndRevenue(const BookingSystem &system) const
     {
         std::cout << "\n========== OCCUPANCY & REVENUE REPORT ==========\n";
         const auto &flights = system.getFlights();
@@ -118,7 +118,7 @@ public:
         }
     }
 
-    void viewOneFlightOccupancy(const BookingSystem &system) const
+    void AdminView:: viewOneFlightOccupancy(const BookingSystem &system) const
     {
         
         const auto &flights = system.getFlights();
@@ -147,7 +147,7 @@ public:
         }
     }
 
-    void showAllPilots(const BookingSystem &system) const
+    void AdminView:: showAllPilots(const BookingSystem &system) const
     {
         const auto &pilots = system.getPilots();
         if (pilots.empty())
@@ -167,7 +167,7 @@ public:
         }
     }
 
-    void showOnePilotDetails(const BookingSystem &system) const
+    void AdminView:: showOnePilotDetails(const BookingSystem &system) const
     {
         const auto &pilots = system.getPilots();
         std::string pilotId;
@@ -188,7 +188,7 @@ public:
                       << pilotId << "\n";
         }
     }
-    void addPilot(BookingSystem &system) const
+    void AdminView:: addPilot(BookingSystem &system) const
     {
         std::string name;
         std::string passportNumber;
@@ -198,7 +198,7 @@ public:
         int age;
         char gender;
         std::cout
-            << "Enter Name PassportNumber " << "PilotID Age Gender Password:\n";
+            << "Enter (Name PassportNumber PilotID Age Gender Password):\n";
         std::cin >> name >> passportNumber >> pilotId >> age >> gender >> password;
         Pilot pilot(pilotId, name, passportNumber, age, gender, password);
         if (system.addPilot(pilot))
@@ -210,7 +210,7 @@ public:
             std::cout << "Pilot already exists.\n";
         }
     }
-    void removePilot(BookingSystem &system) const
+    void AdminView:: removePilot(BookingSystem &system) const
     {
         std::string pilotId;
         std::cout << "Enter Pilot ID: ";
@@ -224,7 +224,7 @@ public:
             std::cout << "Pilot not found.\n";
         }
     }
-    void addFlight(BookingSystem &system) const
+    void AdminView::addFlight(BookingSystem &system) const
     {
         std::string id;
         std::string pilotId;
@@ -250,7 +250,7 @@ public:
         }
     }
 
-    void removeFlight(
+    void AdminView::removeFlight(
         BookingSystem &system) const
     {
         std::string flightId;
@@ -265,7 +265,7 @@ public:
             std::cout << "Flight not found.\n";
         }
     }
-    void listFlights(BookingSystem &system)
+    void AdminView::listFlights(BookingSystem &system)
     {
         auto flights = system.getAllFlights();
         for (auto &f1 : flights)
@@ -274,13 +274,13 @@ public:
             std::cout << "Flight: " << f.getFlightId() << "|" << f.getSource() << "->" << f.getDestination() << "| Time:" << f.getTime() << std::endl;
         }
     }
-    void viewPassengerBookingHistory(const std::string passport, BookingSystem &system) const
+    void AdminView::viewPassengerBookingHistory(const std::string passport, BookingSystem &system) const
     {
         auto passhis = system.getPassengerHistory();
         auto it = passhis.find(passport);
         if (it == passhis.end())
         {
-            std::cout << "No Travel history" << std::endl;
+            std::cout << "No Past Travel history Found" << std::endl;
             return;
         }
         for (auto &b : it->second)
@@ -288,6 +288,4 @@ public:
             std::cout << b.flightId << " at " << b.bookingTime << " status " << b.status << std::endl;
         }
     }
-};
 
-#endif

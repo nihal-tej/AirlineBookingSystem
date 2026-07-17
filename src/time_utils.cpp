@@ -1,18 +1,15 @@
-#ifndef TIME_UTILS_H
-#define TIME_UTILS_H
+#include "time_utils.hpp"
 
 #include <string>
 #include <ctime>
 #include <sstream>
 #include <iomanip>
 
-class TimeUtils
-{
-public:
-    static std::string getCurrentTime()
+
+    std::string TimeUtils::getCurrentTime()
     {
         std::time_t now = std::time(nullptr);
-        std::tm *localTime =std::localtime(&now);
+        std::tm* localTime =std::localtime(&now);
         std::stringstream ss;
         ss << 1900 + localTime->tm_year<< "-"<< std::setw(2)
            << std::setfill('0')<< 1 + localTime->tm_mon<< "-"
@@ -22,6 +19,3 @@ public:
            << ":"<< std::setw(2)<< std::setfill('0')<< localTime->tm_sec;
         return ss.str();
     }
-};
-
-#endif

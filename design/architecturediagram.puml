@@ -1,0 +1,66 @@
+@startuml
+
+skinparam componentStyle rectangle
+
+actor User
+
+package "Presentation Layer" {
+    [AdminView]
+    [PassengerView]
+    [PilotView]
+}
+
+package "Business Layer" {
+    [LoginManager]
+    [BookingSystem]
+    [RouteManager]
+}
+
+package "Persistence Layer" {
+    [BookingStorage]
+}
+
+package "Domain Layer" {
+    [Flight]
+    [Seat]
+    [Passenger]
+    [Pilot]
+}
+
+package "Utility Layer" {
+    [BoardingPassPrinter]
+    [TimeUtils]
+    [InputUtils]
+}
+
+database "Text Files"
+
+User --> LoginManager
+
+LoginManager --> InputUtils
+' LoginManager --> PassengerView
+' LoginManager --> PilotView
+
+AdminView --> BookingSystem
+InputUtils-->AdminView 
+InputUtils-->PassengerView 
+InputUtils-->PilotView 
+PassengerView --> BookingSystem
+PassengerView --> RouteManager
+PassengerView --> BoardingPassPrinter
+PilotView --> BookingSystem
+
+BookingSystem --> Flight
+BookingSystem --> Passenger
+BookingSystem --> Pilot
+BookingSystem --> BookingStorage
+BookingSystem --> TimeUtils
+
+RouteManager --> Flight
+
+BookingStorage --> "Text Files"
+
+Flight *-- Seat
+
+
+@enduml

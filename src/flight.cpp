@@ -1,86 +1,55 @@
-#ifndef FLIGHT_H
-#define FLIGHT_H
+#include "flight.hpp"
 
 #include <iostream>
 #include <vector>
 #include <string>
 #include <stdexcept>
 
-enum class SeatStatus
-{
-    Free,
-    Booked
-};
-class Seat
-{
-    int row;
-    char col;
-    SeatStatus status;
-    double price;
-    std::string passengerPassport;
-public:
-    Seat()
+
+     Seat::Seat()
     {
         row = 0;
         col = 'A';
         status = SeatStatus::Free;
         price = 0;
     }
-    Seat(int r, char c)
+    Seat::Seat(int r, char c)
     {
         row = r;
         col = c;
         status = SeatStatus::Free;
         price = 0;
     }
-    bool isAvailable() const
+    bool Seat::isAvailable() const
     {
         return status == SeatStatus::Free;
     }
-    void reserve(const std::string &passport, double seatPrice)
+    void Seat::reserve(const std::string &passport, double seatPrice)
     {
         status = SeatStatus::Booked;
         passengerPassport = passport;
         price = seatPrice;
     }
-    void freeSeat()
+    void Seat::freeSeat()
     {
         status = SeatStatus::Free;
         passengerPassport = "";
         price = 0;
     }
-    double getPrice() const
+    double Seat::getPrice() const
     {
         return price;
     }
-    SeatStatus getStatus() const
+    SeatStatus Seat::getStatus() const
     {
         return status;
     }
-    std::string getPassengerPassport() const
+    std::string Seat::getPassengerPassport() const
     {
         return passengerPassport;
     }
-};
 
-class Flight
-{
-    std::string flightId;
-    std::string pilotId;
-    std::string src;
-    std::string dest;
-    std::string date;
-    std::string time;
-    int rows;
-    int cols;
-    int totalSeats;
-    int bookedSeats;
-    int baseFare;
-    double revenue;
-    std::vector<std::vector<Seat>> seats;
-
-public:
-    Flight()
+    Flight::Flight()
     {
         flightId="";
         pilotId="";
@@ -95,7 +64,7 @@ public:
         baseFare = 0;
         revenue = 0;
     }
-    Flight(const std::string &id,const std::string &pilId,const std::string &s,const std::string &d,const std::string &dt,
+    Flight::Flight(const std::string &id,const std::string &pilId,const std::string &s,const std::string &d,const std::string &dt,
            const std::string &t,int r,int c,int fare,double rev)
     {
         if (r <= 0 || c <= 0)
@@ -123,18 +92,18 @@ public:
             }
         }
     }
-    bool isSeatAvailable(int row, int col) const
+    bool Flight::isSeatAvailable(int row, int col) const
     {
         if (row < 0 || row >= rows || col < 0 || col >= cols)
             return false;
         return seats[row][col].isAvailable();
     }
-    double calculateSeatPrice() const
+    double Flight::calculateSeatPrice() const
     {
         double occupancy = getOccupancyRate();
         return baseFare * (1.0 + occupancy);
     }
-    bool reserveSeat(int row,int col, const std::string &passport,bool isLoading = false)
+    bool Flight::reserveSeat(int row,int col, const std::string &passport,bool isLoading)
     {
         if (!isSeatAvailable(row, col))
             return false;
@@ -146,7 +115,7 @@ public:
         return true;
     }
 
-    bool freeSeat(int row, int col)
+    bool Flight::freeSeat(int row, int col)
     {
         if (row < 0 || row >= rows || col < 0 || col >= cols)
             return false;
@@ -158,62 +127,62 @@ public:
         return true;
     }
    
-    int getTotalRows() const
+    int Flight::getTotalRows() const
     {
         return rows;
     }
 
-    int getTotalCols() const
+    int Flight::getTotalCols() const
     {
         return cols;
     }
 
-    std::string getPilotId() const
+    std::string Flight::getPilotId() const
     {
         return pilotId;
     }
 
-    std::string getFlightId() const
+    std::string Flight::getFlightId() const
     {
         return flightId;
     }
 
-    std::string getSource() const
+    std::string Flight::getSource() const
     {
         return src;
     }
 
-    std::string getDestination() const
+    std::string Flight::getDestination() const
     {
         return dest;
     }
 
-    std::string getDate() const
+    std::string Flight::getDate() const
     {
         return date;
     }
 
-    std::string getTime() const
+    std::string Flight::getTime() const
     {
         return time;
     }
 
-    int getBookedSeats() const
+    int Flight::getBookedSeats() const
     {
         return bookedSeats;
     }
 
-    int getVacancies() const
+    int Flight::getVacancies() const
     {
         return totalSeats - bookedSeats;
     }
 
-    int getBaseFare() const
+    int Flight::getBaseFare() const
     {
         return baseFare;
     }
 
-    double getOccupancyRate() const
+    double Flight::getOccupancyRate() const
     {
         if (totalSeats == 0)
             return 0.0;
@@ -221,12 +190,12 @@ public:
         return 1.0 * bookedSeats / totalSeats;
     }
 
-    double getRevenue() const
+    double Flight::getRevenue() const
     {
         return revenue;
     }
    
-    void displaySeats()
+    void Flight::displaySeats()
     {
         std::cout << "\nSeat Layout (0 = Free, 1 = Booked)\n\n   ";
         for (int j = 0; j < cols; j++)
@@ -244,6 +213,3 @@ public:
             std::cout << "\n";
         }
     }
-};
-
-#endif

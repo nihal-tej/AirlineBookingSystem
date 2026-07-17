@@ -1,5 +1,4 @@
-#ifndef BOOKING_STORAGE_H
-#define BOOKING_STORAGE_H
+#include "booking_storage.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -11,19 +10,12 @@
 #include <tuple>
 #include <utility>
 
-#include "flight.h"
-#include "passenger.h"
-#include "pilot.h"
-struct BookingRecord
-{
-    std::string flightId;
-    std::string bookingTime;
-    std::string status;
-};
-class BookingStorage
-{
-public:
-    static void saveHistory(const std::map<std::string, std::vector<BookingRecord>> &passengerHistory,const std::string &file)
+#include "flight.hpp"
+#include "passenger.hpp"
+#include "pilot.hpp"
+
+
+    void BookingStorage::saveHistory(const std::map<std::string, std::vector<BookingRecord>> &passengerHistory,const std::string &file)
     {
         std::ofstream out(file);
         for (const auto &historyEntry : passengerHistory)
@@ -36,7 +28,7 @@ public:
         }
     }
 
-    static void loadHistory(std::map<std::string, std::vector<BookingRecord> > &passengerHistory,
+     void BookingStorage::loadHistory(std::map<std::string, std::vector<BookingRecord> > &passengerHistory,
                             const std::string &file)
     {
         std::ifstream in(file);
@@ -56,7 +48,7 @@ public:
         }
         in.close();
     }
-    static void saveBookings(const std::map<std::string,std::vector<Passenger> > &bookings,
+    void BookingStorage::saveBookings(const std::map<std::string,std::vector<Passenger> > &bookings,
         const std::unordered_map<std::string,std::vector<std::pair<std::string,
         std::pair<int, int> > > > &passengerSeatMap,const std::string &file)
     {
@@ -87,7 +79,7 @@ public:
         }
     }
 
-    static void loadBookings(std::map<std::string, std::vector<Passenger> > &bookings, std::map<std::string,
+    void BookingStorage::loadBookings(std::map<std::string, std::vector<Passenger> > &bookings, std::map<std::string,
          std::unordered_set<std::string> > &bookedPassports, std::unordered_map<std::string, 
          std::vector<std::pair<std::string, std::pair<int,int>>>> &passengerSeatMap, 
          std::unordered_map<std::string, Flight> &flights,const std::string &file)
@@ -119,7 +111,7 @@ public:
         in.close();
     }
 
-    static void saveFlights(const std::unordered_map<std::string, Flight> &flights, const std::string &file)
+     void BookingStorage::saveFlights(const std::unordered_map<std::string, Flight> &flights, const std::string &file)
     {
         std::ofstream out(file);
         for (const auto &flightEntry : flights)
@@ -139,7 +131,7 @@ public:
         out.close();
     }
 
-    static void loadFlights(std::unordered_map<std::string, Flight> &flights,
+     void BookingStorage::loadFlights(std::unordered_map<std::string, Flight> &flights,
         std::unordered_map<std::string,std::vector<std::string> > &pilotFlights,
         std::unordered_map<std::string,std::vector<std::pair<std::string,std::tuple<std::string,
         std::string,std::string,std::string>>>> &pilotData,const std::string &file)
@@ -167,7 +159,7 @@ public:
         in.close();
     }
 
-    static void savePilots(
+    void BookingStorage::savePilots(
         const std::unordered_map<std::string,Pilot> &pilots, const std::string &file)
     {
         std::ofstream out(file);
@@ -188,7 +180,7 @@ public:
         }
         out.close();
     }
-    static void loadPilots(std::unordered_map<std::string, Pilot> &pilots,
+    void BookingStorage::loadPilots(std::unordered_map<std::string, Pilot> &pilots,
         std::unordered_set<std::string> &pilotIds,const std::string &file)
     {
         std::ifstream in(file);
@@ -213,6 +205,3 @@ public:
         }
         in.close();
     }
-};
-
-#endif

@@ -1,0 +1,30 @@
+@startuml
+
+skinparam maxMessageSize 100
+skinparam sequenceMessageAlign center
+
+actor User
+
+participant LoginManager
+participant InputUtils
+participant AdminView
+participant PassengerView
+participant PilotView
+
+
+User -> LoginManager : Login()
+
+alt Admin Role
+    LoginManager -> InputUtils : validate Input
+    InputUtils -> AdminView : Route to Admin View
+    
+else Passenger Role
+    LoginManager -> InputUtils : validate Input
+    InputUtils -> PassengerView : Route to Passenger View
+    
+else Pilot Role
+    LoginManager -> InputUtils : validate Input
+    InputUtils -> PilotView : Route to Pilot View
+end
+
+@enduml
